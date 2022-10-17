@@ -43,7 +43,29 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    saveBook: async (parent, { input }) => {},
+    saveBook: async (parent, { input }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("Not logged in");
+      }
+      console.log(context.user);
+      try {
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $addToSet: { savedBooks: input } },
+          { new: true, runValidators: true }
+        );
+        return updatedUser;
+      } catch (err) {
+        console.log(err);
+        throw new GraphQLError("Something is wrong!", {
+          extension: {
+            code: "INTERNAL_SERVER_ERROR",
+            http: { status: 500 },
+          },
+        });
+      }
+    },
+    removeBook: async (parent, { input }) => {},
   },
 };
 
