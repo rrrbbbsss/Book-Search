@@ -30,6 +30,20 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
+    addUser: async (parent, { input }) => {
+      const user = await User.create(input);
+      if (!user) {
+        throw new GraphQLError("Something is wrong!", {
+          extension: {
+            code: "INTERNAL_SERVER_ERROR",
+            http: { status: 500 },
+          },
+        });
+      }
+      const token = signToken(user);
+      return { token, user };
+    },
+    saveBook: async (parent, { input }) => {},
   },
 };
 
