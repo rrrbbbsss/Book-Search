@@ -65,7 +65,25 @@ const resolvers = {
         });
       }
     },
-    removeBook: async (parent, { input }) => {},
+    removeBook: async (parent, { input: { bookId } }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("Not logged in");
+      }
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: context.user._id },
+        { $pull: { savedBooks: { bookId } } },
+        { new: true }
+      );
+      if (!updatedUser) {
+        throw new GraphQLError("Something is wrong!", {
+          extension: {
+            code: "INTERNAL_SERVER_ERROR",
+            http: { status: 500 },
+          },
+        });
+      }
+      return updatedUser;
+    },
   },
 };
 
