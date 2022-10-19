@@ -16,7 +16,7 @@ This is a demo book search engine using a full mern stack.
 ## Installation
 
 Clone the repository and run `npm install` inside of its directory.
-Run `npm start` to start the react application.
+Run `npm run develop` to start the mern application.
 
 ## Deployed Instance
 
